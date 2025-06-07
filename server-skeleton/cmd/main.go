@@ -2,33 +2,32 @@ package main
 
 import (
 	"fmt"
-	"server-skeleton/api/page/model"
-	"server-skeleton/db"
-	"server-skeleton/pkg/config"
+	"github.com/gin-gonic/gin"
+	"log"
+	"server-skeleton/api/page/route"
+	"server-skeleton/api_init"
 )
+
+func routes(config *api_init.InitGlobalStruct) error {
+	r := gin.Default()
+
+	route.InitPageRoutes(r)
+
+	port := fmt.Sprintf(":%s", config.Cfg.ServerPort)
+	err := r.Run(port)
+	return err
+}
 
 func main() {
 
-	fmt.Println("Init config ...")
-	cfg := &config.Config{}
-	cfg.InitConfig()
-
-	fmt.Println("Env: ", cfg.Env)
-
-	fmt.Println("Init db ...")
-
-	dbh, err := db.ConnectionFactory(cfg)
+	fmt.Println("Init main ...")
+	err := api_init.MainInit("")
 	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Run migrations ...")
-	err = dbh.AutoMigrate(&model.Page{})
-
-	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	//	repo := repository.PostgresPageRepository(dbh)
-	fmt.Println("End!")
-
+	err = routes(api_init.InitGlobal)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

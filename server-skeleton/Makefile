@@ -1,30 +1,56 @@
 BINARY_NAME=main.go
-
 ENV_FILES=.env .env.dev
+DB_URL=postgres://postgres:postgres@localhost:5432/apigobox?sslmode=disable
+DB_URL_TEST=postgres://postgres:postgres@localhost:5432/apigobox-test?sslmode=disable
+MIGRATIONS_DIR=./db/migrations
+TESTS_DIR=./tests
 
 default: run
 
 build:
 	go build -o $(BINARY_NAME) ./cmd/$(BINARY_NAME)
+.PHONY: build
 
 run:
 	@echo "▶️  Running $(BINARY_NAME)..."
-	@for env in $(ENV_FILES); do \
-		if [ -f $$env ]; then \
-			export $$(cat $$env | xargs); \
-		fi; \
-	done; \
-	go run ./cmd/$(BINARY_NAME)
+	APP_ENV=dev go run ./cmd/$(BINARY_NAME)
+.PHONY: run
 
 fmt:
 	go fmt ./...
+.PHONY: fmt
 
 tidy:
 	go mod tidy
+.PHONY: tidy
 
 test:
-	go test ./...
+	APP_ENV=test go test $(TESTS_DIR)
+.PHONY: test
 
-# Удалить бинарник
+testv:
+	APP_ENV=test go test $(TESTS_DIR) -v
+.PHONY: testv
+
 clean:
 	rm -f $(BINARY_NAME)
+.PHONY: clean
+
+mc:
+	goose create -dir $(MIGRATIONS_DIR) $(NAME) sql
+
+mu:
+	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" up
+.PHONY: mu
+
+md:
+	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" down
+.PHONY: md
+
+mut:
+	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL_TEST)" up
+.PHONY: mut
+
+mdt:
+	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL_TEST)" down
+.PHONY: mdt

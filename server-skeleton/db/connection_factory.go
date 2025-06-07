@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 	"server-skeleton/pkg/config"
 )
 
@@ -26,7 +25,7 @@ func ConnectionFactory(config *config.Config) (*gorm.DB, error) {
 	switch config.DbDriver {
 	case DbDriverPostgres:
 		return gorm.Open(postgres.Open(dsn), &gorm.Config{
-			Logger: logger.Default.LogMode(logger.Info),
+			//	Logger: logger.Default.LogMode(logger.Info),
 		})
 	}
 
