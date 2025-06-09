@@ -5,9 +5,14 @@ import (
 	"server-skeleton/api/page/handler"
 )
 
-const UriPageGetById = "/page/:id"
-const UriPageGetByIdS = "/page/%s"
+const UriPage = "/page"
+const UriPageGetById = UriPage + "/:id"
+const UriPageGetByIdS = UriPage + "/%s"
 
 func InitPageRoutes(route *gin.Engine) {
 	route.GET(UriPageGetById, handler.GetPageById)
+	route.GET(UriPage, handler.GetPagesList)
+	route.POST(UriPage, handler.CreatePage)
+	route.PATCH(UriPage, handler.PatchPage)
+	route.PUT(UriPage, handler.PutPage)
 }

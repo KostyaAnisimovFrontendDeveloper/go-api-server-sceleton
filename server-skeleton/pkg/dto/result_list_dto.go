@@ -1,5 +1,7 @@
 package dto
 
+import "server-skeleton/api/page/dto/result"
+
 type ResultListDTO struct {
-	list []any
+	List []result.PageItemResultDto `json:"list"`
 }

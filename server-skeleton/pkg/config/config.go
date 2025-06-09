@@ -8,16 +8,17 @@ import (
 const DefaultEnv = "prod"
 
 type Config struct {
-	ServerName string
-	ServerPort string
-	Env        string
-	DbHost     string
-	DbUser     string
-	DbPassword string
-	DbName     string
-	DbPort     string
-	DbSSLMode  string
-	DbDriver   string
+	ServerName   string
+	ServerDomain string
+	ServerPort   string
+	Env          string
+	DbHost       string
+	DbUser       string
+	DbPassword   string
+	DbName       string
+	DbPort       string
+	DbSSLMode    string
+	DbDriver     string
 }
 
 func GetEnv() string {
@@ -39,6 +40,7 @@ func (config *Config) InitConfig(path string) error {
 	}
 
 	config.ServerName = os.Getenv("SERVER_NAME")
+	config.ServerDomain = os.Getenv("SERVER_DOMAINE")
 	config.ServerPort = os.Getenv("SERVER_PORT")
 
 	config.DbHost = os.Getenv("DB_HOST")

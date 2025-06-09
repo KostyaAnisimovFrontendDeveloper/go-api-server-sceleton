@@ -33,3 +33,7 @@ func MainInit(basePath string) error {
 
 	return nil
 }
+
+func GetDbh() *gorm.DB {
+	return InitGlobal.Dbh
+}

@@ -1,0 +1,159 @@
+definitions:
+  request.RequestPageDTO:
+    properties:
+      name:
+        example: Some Page
+        type: string
+    type: object
+  result.PageItemResultDto:
+    properties:
+      id:
+        example: 2a4ced49-0f43-496e-b823-5af77407fd2c
+        type: string
+      name:
+        example: Some Page
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /page:
+    get:
+      consumes:
+      - application/json
+      description: Getting pages
+      parameters:
+      - collectionFormat: csv
+        description: Name
+        in: query
+        items:
+          type: string
+        name: names
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/request.RequestPageDTO'
+            type: array
+      tags:
+      - pages
+    post:
+      consumes:
+      - application/json
+      description: Create page
+      parameters:
+      - description: Sent date
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.RequestPageDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/result.PageItemResultDto'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create page
+      tags:
+      - pages
+  /page/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Getting page by id
+      parameters:
+      - description: Page id (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/request.RequestPageDTO'
+            type: array
+      tags:
+      - page
+    patch:
+      consumes:
+      - application/json
+      description: Update only sent fields
+      parameters:
+      - description: Updated data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.RequestPageDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/result.PageItemResultDto'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Patch page
+      tags:
+      - page
+    put:
+      consumes:
+      - application/json
+      description: Update all sent fields
+      parameters:
+      - description: Updated data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.RequestPageDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/result.PageItemResultDto'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Patch page
+      tags:
+      - page
+swagger: "2.0"

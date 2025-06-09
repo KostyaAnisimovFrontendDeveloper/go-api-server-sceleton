@@ -4,7 +4,7 @@ DB_URL=postgres://postgres:postgres@localhost:5432/apigobox?sslmode=disable
 DB_URL_TEST=postgres://postgres:postgres@localhost:5432/apigobox-test?sslmode=disable
 MIGRATIONS_DIR=./db/migrations
 TESTS_DIR=./tests
-
+SERVER_PORT=8081
 default: run
 
 build:
@@ -13,9 +13,13 @@ build:
 
 run:
 	@echo "▶️  Running $(BINARY_NAME)..."
-	APP_ENV=dev go run ./cmd/$(BINARY_NAME)
+	APP_ENV=dev go run $(BINARY_NAME)
 .PHONY: run
 
+stop:
+	@echo "Остановка сервера"
+	@kill -SIGINT $(shell lsof -t -i:$(SERVER_PORT))
+.PHONY: stop
 fmt:
 	go fmt ./...
 .PHONY: fmt
