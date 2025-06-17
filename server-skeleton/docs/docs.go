@@ -37,6 +37,34 @@ const docTemplate = `{
                         "description": "Name",
                         "name": "names",
                         "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "cursor (las id uuid)",
+                        "name": "cursor",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "lastTimestamp",
+                        "name": "lastTimestamp",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Filter created_at Like min-max (пример: 2024-01-01_2024-12-31)",
+                        "name": "orders[created_at]",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -45,7 +73,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/request.RequestPageDTO"
+                                "$ref": "#/definitions/page.RequestPageDTO"
                             }
                         }
                     }
@@ -70,7 +98,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestPageDTO"
+                            "$ref": "#/definitions/page.RequestPageDTO"
                         }
                     }
                 ],
@@ -78,7 +106,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/result.PageItemResultDto"
+                            "$ref": "#/definitions/page.SuccessResponseDto"
                         }
                     },
                     "400": {
@@ -125,7 +153,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/request.RequestPageDTO"
+                                "$ref": "#/definitions/page.RequestPageDTO"
                             }
                         }
                     }
@@ -142,15 +170,22 @@ const docTemplate = `{
                 "tags": [
                     "page"
                 ],
-                "summary": "Patch page",
+                "summary": "Put page",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Page id (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "Updated data",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestPageDTO"
+                            "$ref": "#/definitions/page.RequestPageDTO"
                         }
                     }
                 ],
@@ -158,7 +193,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/result.PageItemResultDto"
+                            "$ref": "#/definitions/page.SuccessResponseDto"
                         }
                     },
                     "400": {
@@ -177,6 +212,38 @@ const docTemplate = `{
                     }
                 }
             },
+            "delete": {
+                "description": "Deleting page by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "page"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Page id (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/page.RequestPageDTO"
+                            }
+                        }
+                    }
+                }
+            },
             "patch": {
                 "description": "Update only sent fields",
                 "consumes": [
@@ -191,12 +258,19 @@ const docTemplate = `{
                 "summary": "Patch page",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Page id (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Updated data",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestPageDTO"
+                            "$ref": "#/definitions/page.RequestPageDTO"
                         }
                     }
                 ],
@@ -204,7 +278,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/result.PageItemResultDto"
+                            "$ref": "#/definitions/page.PageItemResultDto"
                         }
                     },
                     "400": {
@@ -226,25 +300,52 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "request.RequestPageDTO": {
+        "page.PageItemResultDto": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
                 "name": {
-                    "type": "string",
-                    "example": "Some Page"
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
-        "result.PageItemResultDto": {
+        "page.RequestPageDTO": {
             "type": "object",
             "properties": {
-                "id": {
+                "created_at": {
                     "type": "string",
-                    "example": "2a4ced49-0f43-496e-b823-5af77407fd2c"
+                    "example": "2022-01-01T00:00:00Z"
+                },
+                "deleted_at": {
+                    "type": "string",
+                    "example": "2022-01-01T00:00:00Z"
                 },
                 "name": {
                     "type": "string",
                     "example": "Some Page"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2022-01-01T00:00:00Z"
+                }
+            }
+        },
+        "page.SuccessResponseDto": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
                 }
             }
         }

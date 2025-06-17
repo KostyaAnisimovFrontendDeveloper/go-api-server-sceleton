@@ -3,7 +3,7 @@ ENV_FILES=.env .env.dev
 DB_URL=postgres://postgres:postgres@localhost:5432/apigobox?sslmode=disable
 DB_URL_TEST=postgres://postgres:postgres@localhost:5432/apigobox-test?sslmode=disable
 MIGRATIONS_DIR=./db/migrations
-TESTS_DIR=./tests
+TESTS_DIR=./api/page
 SERVER_PORT=8081
 default: run
 
@@ -15,6 +15,11 @@ run:
 	@echo "▶️  Running $(BINARY_NAME)..."
 	APP_ENV=dev go run $(BINARY_NAME)
 .PHONY: run
+
+runs:
+	@echo "▶️  Running with swagger $(BINARY_NAME)..."
+	swag init && APP_ENV=dev go run $(BINARY_NAME)
+.PHONY: runs
 
 stop:
 	@echo "Остановка сервера"
